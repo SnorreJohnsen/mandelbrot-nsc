@@ -16,4 +16,5 @@ float
 Output value
 """
 # TODO : Implement the algorithm
+# small change for test
 pass
