@@ -9,15 +9,18 @@ import matplotlib.pyplot as plt
 
 def mandelbrot_point ( c ) :
     """
-    Example function .
+    computes one mandelbrot point
+
     Parameters
     ----------
-    c : float
-    Input value
+    c : complex
+        complex constant
+    
+    
     Returns
     -------
-    float
-    Output value
+    n : int 
+        iterations
     """
 
     z = 0 
@@ -31,7 +34,29 @@ def mandelbrot_point ( c ) :
 
 
 def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
+    """
+    compute mandelbrot set over 2d region
+
+    Parameters
+    ----------
+    x_min : float
+        minimum real value of region
+    x_max : float
+        maximum real value of region 
+    y_min : float
+        minimum imaginary value of region
+    y_max : float
+        maximum imaginary value of region 
+    resx : int
+        number of points in x-axis
+    resy : int
+        number of points in y-axis
     
+    Returns
+    -------
+    all_n : numpy.ndarray of shape (resx, resy)
+        2d array containing number of iterations before magnitude grows too large for each point in the complex grid
+    """
 
     #create evenly spaced numbers
     x = np.linspace(x_min, x_max, resx)
