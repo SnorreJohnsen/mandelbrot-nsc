@@ -5,6 +5,7 @@ Course : Numerical Scientific Computing 2026
 """
 import numpy as np
 import time
+import matplotlib.pyplot as plt
 
 def mandelbrot_point ( c ) :
     """
@@ -27,6 +28,7 @@ def mandelbrot_point ( c ) :
         if abs(z) > 2:
             return n
     return n
+
 
 def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
     
@@ -52,3 +54,11 @@ if __name__ == "__main__":
     all_n = compute_mandelbrot(-2, 1, -1.5, 1.5, 1024, 1024)
     elapsed = time.time() - start
     print(f"Computation took {elapsed:.3f} seconds")
+
+    #to crate image of mandelbrot
+    plt.imshow(all_n, cmap = "hot")
+    plt.title("Mandelbrot plot")
+    plt.colorbar()
+    plt.savefig("naive_mandelbrot.png")
+    plt.show()
+  
