@@ -29,7 +29,7 @@ def mandelbrot_point ( c ) :
     return n
 
 def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
-
+    
 
     #create evenly spaced numbers
     x = np.linspace(x_min, x_max, resx)
@@ -48,5 +48,7 @@ def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
 
 
 if __name__ == "__main__":
-
-    all_n = compute_mandelbrot(-2, 1, -1.5, 1.5, 100, 100)
+    start = time.time()
+    all_n = compute_mandelbrot(-2, 1, -1.5, 1.5, 1024, 1024)
+    elapsed = time.time() - start
+    print(f"Computation took {elapsed:.3f} seconds")
