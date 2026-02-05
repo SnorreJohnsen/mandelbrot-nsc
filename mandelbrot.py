@@ -36,17 +36,17 @@ def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
     y = np.linspace(y_min, y_max, resy)
 
     #create arrays for iterations
-    all_c = np.zeros((resx, resy), dtype = complex)
     all_n = np.zeros((resx, resy), dtype = int)
 
     for i in range(resx):
         for j in range(resy):
-            all_c[i, j] = x[i] + 1j * y[j]
-            all_n[i, j] = mandelbrot_point(all_c[i, j])
-    return all_c, all_n
+            c = x[i] + 1j * y[j]
+            all_n[i, j] = mandelbrot_point(c)
+    return all_n
             
 
 
 
 if __name__ == "__main__":
-    all_c, all_n = compute_mandelbrot(-2, 1, -1.5, 1.5, 100, 100)
+
+    all_n = compute_mandelbrot(-2, 1, -1.5, 1.5, 100, 100)
