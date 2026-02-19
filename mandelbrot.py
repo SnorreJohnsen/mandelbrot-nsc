@@ -7,7 +7,7 @@ import numpy as np
 import time, statistics
 import matplotlib.pyplot as plt
 
-def mandelbrot_point ( c ) :
+def mandelbrot_point_naive ( c ) :
     """
     computes one mandelbrot point
 
@@ -32,10 +32,9 @@ def mandelbrot_point ( c ) :
             return n
     return n
 
-
-def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
+def compute_mandelbrot_naive (x_min, x_max, y_min, y_max, resx, resy):
     """
-    compute mandelbrot set over 2d region
+    compute mandelbrot set over 2d region naive implementation
 
     Parameters
     ----------
@@ -62,22 +61,62 @@ def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
     x = np.linspace(x_min, x_max, resx)
     y = np.linspace(y_min, y_max, resy)
 
-    # create meshgrid
-    X, Y = np.meshgrid(x, y)
-
-    C = X + 1j*Y
-
-    print(f"Shape: {C.shape}")
-    print(f"Type: {C.dtype}")
-
     #create arrays for iterations
     all_n = np.zeros((resx, resy), dtype = int)
 
     for i in range(resx):
         for j in range(resy):
             c = x[i] + 1j * y[j]
-            all_n[i, j] = mandelbrot_point(c)
+            all_n[i, j] = mandelbrot_point_naive(c)
     return all_n
+
+def compute_mandelbrot_vectorized(x_min, x_max, y_min, y_max, resx, resy):
+    """
+    compute mandelbrot set over 2d region using numpy vectorized
+
+    Parameters
+    ----------
+    x_min : float
+        minimum real value of region
+    x_max : float
+        maximum real value of region 
+    y_min : float
+        minimum imaginary value of region
+    y_max : float
+        maximum imaginary value of region 
+    resx : int
+        number of points in x-axis
+    resy : int
+        number of points in y-axis
+    
+    Returns
+    -------
+    M : numpy.ndarray of shape (resx, resy)
+        2d array containing number of iterations before magnitude grows too large for each point in the complex grid
+    """
+    # Parameter max iteration if not exceding 2
+    max_iter = 100
+
+    #create evenly spaced numbers
+    x = np.linspace(x_min, x_max, resx)
+    y = np.linspace(y_min, y_max, resy)
+
+    # create meshgrid
+    X, Y = np.meshgrid(x, y)
+
+    C = X + 1j*Y
+
+    # init Z (complex) and M (iteration counter) arrays shape like C
+    Z = np.zeros_like(C, dtype=complex)
+    M = np.zeros_like(C, dtype=int)
+
+    # Compute mandelbrot point function vectorized
+    for _ in range(max_iter):
+        mask = np.abs(Z) <= 2               # Boolean mask True: not diverged yet, False: points have escaped
+        Z[mask] = Z[mask]**2 + C[mask]      # Updates only Z if mask True
+        M[mask] += 1                        # Counts up max iteration matrix
+
+    return M
             
 def benchmark (func,
                *args, 
@@ -98,11 +137,17 @@ def benchmark (func,
 
 
 if __name__ == "__main__":
-    elapsed_time, mandelbrot_out = benchmark(compute_mandelbrot, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
-    print(f"Computation took {elapsed_time:.3f} seconds")
+
+    # Benchmark naive
+    #elapsed_time_nai, mandelbrot_nai_out = benchmark(compute_mandelbrot_naive, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=3)
+    #print(f"Computation took {elapsed_time_nai:.3f} seconds")
+
+    # Benchmark vectorized
+    elapsed_time_vec, mandelbrot_vec_out = benchmark(compute_mandelbrot_vectorized, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=3)
+    print(f"Computation took {elapsed_time_vec:.3f} seconds")
 
     #to crate image of mandelbrot
-    plt.imshow(mandelbrot_out, cmap = "hot")
+    plt.imshow(mandelbrot_vec_out, cmap = "hot")
     plt.title("Mandelbrot plot vectorized")
     plt.colorbar()
     plt.savefig("vectorized_mandelbrot.png")
