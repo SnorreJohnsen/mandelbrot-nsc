@@ -62,6 +62,13 @@ def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
     x = np.linspace(x_min, x_max, resx)
     y = np.linspace(y_min, y_max, resy)
 
+    # create meshgrid
+    X, Y = np.meshgrid(x, y)
+
+    C = X + 1j*Y
+
+    print(f"Shape: {C.shape}")
+    print(f"Type: {C.dtype}")
 
     #create arrays for iterations
     all_n = np.zeros((resx, resy), dtype = int)
@@ -91,7 +98,7 @@ def benchmark (func,
 
 
 if __name__ == "__main__":
-    elapsed_time, mandelbrot_out = benchmark(compute_mandelbrot, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=3)
+    elapsed_time, mandelbrot_out = benchmark(compute_mandelbrot, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
     print(f"Computation took {elapsed_time:.3f} seconds")
 
     #to crate image of mandelbrot
