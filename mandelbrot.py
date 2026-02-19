@@ -7,6 +7,21 @@ import numpy as np
 import time, statistics
 import matplotlib.pyplot as plt
 
+def row_sums(A: np.ndarray) -> float:
+    """ computes row sums of square matrix"""
+    for i in range(len(A)):     # len(A) gives number of first row
+        s = np.sum(A[i, :])
+
+    return s
+
+def column_sums(A: np.ndarray) -> float:
+    """ computes column sums of square matrix"""
+    for j in range(len(A)):     # len(A) gives number of first row
+        s = np.sum(A[:, j])
+
+    return s
+    
+
 def mandelbrot_point_naive ( c ) :
     """
     computes one mandelbrot point
@@ -117,6 +132,8 @@ def compute_mandelbrot_vectorized(x_min, x_max, y_min, y_max, resx, resy):
         M[mask] += 1                        # Counts up max iteration matrix
 
     return M
+
+
             
 def benchmark (func,
                *args, 
@@ -128,7 +145,7 @@ def benchmark (func,
         result = func (* args )
         times.append(time.perf_counter () - t0 )
     median_t = statistics.median(times)
-    print (f" Median : {median_t:.4f} s"
+    print (f"Median : {median_t:.4f} s"
            f" ( min ={min(times):.4f} , max ={max(times):.4f})" )
     return median_t , result
 
@@ -137,14 +154,38 @@ def benchmark (func,
 
 
 if __name__ == "__main__":
+    N = 10000
+    A = np.random.rand(N, N)
+    A_f = np.asfortranarray(A)
+
+    time_row, _ = benchmark(row_sums, A_f)
+    time_column, _ = benchmark(column_sums, A_f)
+
+    print(f"{time_row=}")
+    print(f"{time_column=}")
+
+    # Result for nparray 
+    # Median : 0.1195 s ( min =0.1182 , max =0.8294)
+    # Median : 1.4539 s ( min =1.4427 , max =1.5742)
+    # time_row=0.11948005000158446
+    # time_column=1.4538839970009576
+
+    # Result for fortran arrray
+    # Median : 1.3178 s ( min =1.2459 , max =1.5608)
+    # Median : 0.0989 s ( min =0.0973 , max =0.1113)
+    # time_row=1.317769376000797
+    # time_column=0.0988852999980736
+
+    exit()
 
     # Benchmark naive
-    #elapsed_time_nai, mandelbrot_nai_out = benchmark(compute_mandelbrot_naive, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=3)
+    #elapsed_time_nai, mandelbrot_nai_out = benchmark(compute_mandelbrot_naive, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
     #print(f"Computation took {elapsed_time_nai:.3f} seconds")
 
     # Benchmark vectorized
-    elapsed_time_vec, mandelbrot_vec_out = benchmark(compute_mandelbrot_vectorized, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=3)
+    elapsed_time_vec, mandelbrot_vec_out = benchmark(compute_mandelbrot_vectorized, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
     print(f"Computation took {elapsed_time_vec:.3f} seconds")
+
 
     #to crate image of mandelbrot
     plt.imshow(mandelbrot_vec_out, cmap = "hot")
