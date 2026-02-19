@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     #to crate image of mandelbrot
     plt.imshow(all_n, cmap = "hot")
-    plt.title("Mandelbrot plot")
+    plt.title("Mandelbrot plot naive")
     plt.colorbar()
     plt.savefig("naive_mandelbrot.png")
     plt.show()
