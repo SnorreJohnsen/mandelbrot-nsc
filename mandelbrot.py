@@ -4,7 +4,7 @@ Author : [ Snorre Johnsen ]
 Course : Numerical Scientific Computing 2026
 """
 import numpy as np
-import time
+import time, statistics
 import matplotlib.pyplot as plt
 
 def mandelbrot_point ( c ) :
@@ -62,6 +62,7 @@ def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
     x = np.linspace(x_min, x_max, resx)
     y = np.linspace(y_min, y_max, resy)
 
+
     #create arrays for iterations
     all_n = np.zeros((resx, resy), dtype = int)
 
@@ -71,19 +72,32 @@ def compute_mandelbrot (x_min, x_max, y_min, y_max, resx, resy):
             all_n[i, j] = mandelbrot_point(c)
     return all_n
             
+def benchmark (func,
+               *args, 
+               n_runs =3) :
+    """ Time func , return median of n_runs . From slides. """
+    times = []
+    for _ in range(n_runs):
+        t0 = time.perf_counter()
+        result = func (* args )
+        times.append(time.perf_counter () - t0 )
+    median_t = statistics.median(times)
+    print (f" Median : {median_t:.4f} s"
+           f" ( min ={min(times):.4f} , max ={max(times):.4f})" )
+    return median_t , result
 
+# Example of usage
+# t , M = benchmark ( my_mandelbrot , -2 , 1 , -1.5 , 1.5 , 1024 , 1024 , 100)
 
 
 if __name__ == "__main__":
-    start = time.time()
-    all_n = compute_mandelbrot(-2, 1, -1.5, 1.5, 1024, 1024)
-    elapsed = time.time() - start
-    print(f"Computation took {elapsed:.3f} seconds")
+    elapsed_time, mandelbrot_out = benchmark(compute_mandelbrot, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=3)
+    print(f"Computation took {elapsed_time:.3f} seconds")
 
     #to crate image of mandelbrot
-    plt.imshow(all_n, cmap = "hot")
-    plt.title("Mandelbrot plot naive")
+    plt.imshow(mandelbrot_out, cmap = "hot")
+    plt.title("Mandelbrot plot vectorized")
     plt.colorbar()
-    plt.savefig("naive_mandelbrot.png")
+    plt.savefig("vectorized_mandelbrot.png")
     plt.show()
   
