@@ -48,6 +48,7 @@ def mandelbrot_point_naive ( c ) :
             return n
     return n
 
+@line_profiler.profile
 def compute_mandelbrot_naive (x_min, x_max, y_min, y_max, resx, resy):
     """
     compute mandelbrot set over 2d region naive implementation
