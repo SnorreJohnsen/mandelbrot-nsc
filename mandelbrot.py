@@ -6,6 +6,7 @@ Course : Numerical Scientific Computing 2026
 import numpy as np
 import time, statistics
 import matplotlib.pyplot as plt
+import line_profiler
 
 def row_sums(A: np.ndarray) -> float:
     """ computes row sums of square matrix"""
@@ -21,7 +22,7 @@ def column_sums(A: np.ndarray) -> float:
 
     return s
     
-
+@line_profiler.profile
 def mandelbrot_point_naive ( c ) :
     """
     computes one mandelbrot point
@@ -156,9 +157,10 @@ def benchmark (func,
 if __name__ == "__main__":
 
     # Benchmark naive
-    #elapsed_time_nai, mandelbrot_nai_out = benchmark(compute_mandelbrot_naive, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
+    elapsed_time_nai, mandelbrot_nai_out = benchmark(compute_mandelbrot_naive, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
     #print(f"Computation took {elapsed_time_nai:.3f} seconds")
 
+    exit()
     res_list = [256, 512, 1024, 2048, 4096]
     time_plot = []
 
