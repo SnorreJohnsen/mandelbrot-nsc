@@ -1,0 +1,112 @@
+2026-02-27 2b43a83 added hardspecs and os to minireport
+
+ mandelbrot_performance_nb.ipynb | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+2026-02-27 b7603c2 Milestone 5 tried parrallel numba version
+
+ mandelbrot_performance_nb.ipynb | 91 ++++++++++++++++++++++++++---------------
+ 1 file changed, 57 insertions(+), 34 deletions(-)
+2026-02-27 5dcb2ac Milestone 4. made type comparison float32 and 64
+
+ __pycache__/mandelbrot.cpython-311.pyc | Bin 7053 -> 7347 bytes
+ mandelbrot_performance_nb.ipynb        | 182 ++++++++++++++++++++++++++-------
+ precision_comparison.png               | Bin 0 -> 82795 bytes
+ 3 files changed, 147 insertions(+), 35 deletions(-)
+2026-02-26 5ae3efc benchmarked numba version last speedup was wrong. new speedup 83x
+
+ mandelbrot_performance_nb.ipynb | 42 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 40 insertions(+), 2 deletions(-)
+2026-02-26 291e91d Milestone 3 numba version done. speedup rougly x24
+
+ mandelbrot_performance_nb.ipynb | 152 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 152 insertions(+)
+2026-02-26 ad2126a Milestone 2 added the profiling section and did profiling on the total mandbrot function
+
+ mandelbrot.py                   |   1 +
+ mandelbrot.py.lprof             | Bin 246 -> 379 bytes
+ mandelbrot_performance_nb.ipynb | 102 +++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 102 insertions(+), 1 deletion(-)
+2026-02-26 1911c16 Milestone 2 performed @profile and @line_profiler.profile
+
+ mandelbrot.py                   |   6 ++-
+ mandelbrot.py.lprof             | Bin 0 -> 246 bytes
+ mandelbrot_performance_nb.ipynb | 111 ++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 111 insertions(+), 6 deletions(-)
+2026-02-26 93c5686 Milestone 1 function levelprofiling, created jupyter notebook for minireport
+
+ __pycache__/mandelbrot.cpython-311.pyc | Bin 0 -> 7053 bytes
+ mandelbrot_performance_nb.ipynb        | 140 +++++++++++++++++++++++++++++++++
+ naive_profile.prof                     | Bin 0 -> 2635 bytes
+ numpy_profile.prof                     | Bin 0 -> 5335 bytes
+ 4 files changed, 140 insertions(+)
+2026-02-19 f120144 Milestone 4 made grid vs runtime plot
+
+ mandelbrot.py               |  46 +++++++++++++++++++-------------------------
+ vectorized_scaling_plot.png | Bin 0 -> 21588 bytes
+ 2 files changed, 20 insertions(+), 26 deletions(-)
+2026-02-19 249741e Milestone 3 result of column and row sums timing
+
+ mandelbrot.py | 47 ++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 44 insertions(+), 3 deletions(-)
+2026-02-19 badef98 made vectorized version roughly 5.11xspeedup
+
+ mandelbrot.py             |  77 ++++++++++++++++++++++++++++++++++++----------
+ vectorized_mandelbrot.png | Bin 0 -> 57476 bytes
+ 2 files changed, 61 insertions(+), 16 deletions(-)
+2026-02-19 8a7b197 milestone 1 made basic complex numpyarray and verified shape and type
+
+ mandelbrot.py | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+2026-02-19 b54fd6b added timing function from slides
+
+ mandelbrot.py | 30 ++++++++++++++++++++++--------
+ 1 file changed, 22 insertions(+), 8 deletions(-)
+2026-02-19 1e14c51 just changed name of saved figure and title for later comparison
+
+ mandelbrot.py        |   2 +-
+ naive_mandelbrot.png | Bin 55659 -> 56228 bytes
+ 2 files changed, 1 insertion(+), 1 deletion(-)
+2026-02-05 b0656cc added some extra documentation
+
+ mandelbrot.py | 35 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
+2026-02-05 26d1764 pushed png of naive mandelbrot
+
+ naive_mandelbrot.png | Bin 0 -> 55659 bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+2026-02-05 c6e0b17 made print fig and save fig
+
+ mandelbrot.py | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+2026-02-05 d93beef added time measurement for compute_mandelbrot
+
+ mandelbrot.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+2026-02-05 baedfa6 made change so only result iter is returned
+
+ mandelbrot.py | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+2026-02-05 61817ff implemented compute mandelbrot
+
+ mandelbrot.py | 30 +++++++++++++++++++++++-------
+ 1 file changed, 23 insertions(+), 7 deletions(-)
+2026-02-05 859c7d1 added mandelbrot point loop function
+
+ mandelbrot.py | 46 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 15 deletions(-)
+2026-02-05 c4ec3cb Added name
+
+ mandelbrot.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+2026-02-05 5261cb1 Added small change for testing git
+
+ mandelbrot.py | 1 +
+ 1 file changed, 1 insertion(+)
+2026-02-05 543041f Add mandelbrot skeleton from the slides
+
+ mandelbrot.py | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+2026-02-05 4ede25c Add python enviroment specification
+
+ environment.yml | 239 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 239 insertions(+)
