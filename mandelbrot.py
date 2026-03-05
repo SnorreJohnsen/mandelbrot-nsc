@@ -4,9 +4,10 @@ Author : [ Snorre Johnsen ]
 Course : Numerical Scientific Computing 2026
 """
 import numpy as np
-import time, statistics
+import time, statistics, os
 import matplotlib.pyplot as plt
 from numba import njit, prange
+from multiprocessing import Pool
 
 def row_sums(A: np.ndarray) -> float:
     """ computes row sums of square matrix"""
@@ -182,7 +183,36 @@ def compute_mandelbrot_numba(x_min, x_max, y_min, y_max, resx, resy):
             c = x[i] + 1j * y[j]
             all_n[i, j] = mandelbrot_point_numba(c)
     return all_n
-            
+
+# mandelbrot_parallel.py (Tasks 1-3 are one continuous script)
+@njit
+def mandelbrot_pixel(c_real, c_imag, max_iter):
+    z_real = z_imag = 0.0
+    for i in range(max_iter):
+        z_real_sq = z_real*z_real
+        z_imag_sq = z_imag*z_imag
+        if z_real_sq + z_imag_sq > 4.0:
+            return i
+        z_imag_new = 2.0*z_real*z_imag + c_imag
+        z_real = z_real_sq - z_imag_sq + c_real
+        z_imag = z_imag_new
+    return max_iter
+
+@njit
+def mandelbrot_chunk(row_start, row_end, N,
+                     x_min, x_max, y_min, y_max, max_iter):
+    out = np.empty((row_end - row_start, N), dtype=np.int32)
+    dx = (x_max - x_min) / N
+    dy = (y_max - y_min) / N
+    for r in range(row_end - row_start):
+        c_imag = y_min + (r + row_start) * dy
+        for col in range(N):
+            out[r, col] = mandelbrot_pixel(x_min + col*dx, c_imag, max_iter)
+    return out
+
+def mandelbrot_serial(N, x_min, x_max, y_min, y_max, max_iter=100):
+    return mandelbrot_chunk(0, N, N, x_min, x_max, y_min, y_max, max_iter)
+    
 def benchmark (func,
                *args, 
                n_runs =3) :
@@ -203,40 +233,22 @@ def benchmark (func,
 
 if __name__ == "__main__":
 
-    # Benchmark naive
-    elapsed_time_nai, mandelbrot_nai_out = benchmark(compute_mandelbrot_naive, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
-    #print(f"Computation took {elapsed_time_nai:.3f} seconds")
+    N = 1024
+    x_min, x_max = -2.0, 1.0
+    y_min, y_max = -1.5, 1.5
+    max_iter = 100
 
+    _ = mandelbrot_serial(N, x_min, x_max, y_min, y_max, max_iter) # warmup run
+    t_serial, mb_serial = benchmark(mandelbrot_serial,
+                                    N, x_min, x_max, y_min, y_max, max_iter,
+                                    n_runs=3)
     
-    
-    
-    exit()
-    res_list = [256, 512, 1024, 2048, 4096]
-    time_plot = []
-
-    for res in res_list:
-        # Benchmark vectorized
-        elapsed_time_vec, mandelbrot_vec_out = benchmark(compute_mandelbrot_vectorized, -2, 1, -1.5, 1.5, res, res, n_runs=1)
-        
-        time_plot.append(elapsed_time_vec)
-
-        print(f"Computation resolution {res} took {elapsed_time_vec:.3f} seconds")
-
-    plt.figure()
-    plt.plot(res_list, time_plot)
-    plt.title("Vectorized scaling plot")
-    plt.xlabel("Grid resolution")
-    plt.ylabel("Time [s]")
-    plt.grid(True)
-    plt.savefig("vectorized_scaling_plot.png")
-    plt.show()
+    print(f"Computation took {t_serial:.3f} seconds")
 
 
-    exit()
     #to crate image of mandelbrot
-    plt.imshow(mandelbrot_vec_out, cmap = "hot")
+    plt.imshow(mb_serial, cmap = "hot")
     plt.title("Mandelbrot plot vectorized")
     plt.colorbar()
-    plt.savefig("vectorized_mandelbrot.png")
     plt.show()
   
