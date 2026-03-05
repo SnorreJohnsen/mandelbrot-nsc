@@ -212,6 +212,28 @@ def mandelbrot_chunk(row_start, row_end, N,
 
 def mandelbrot_serial(N, x_min, x_max, y_min, y_max, max_iter=100):
     return mandelbrot_chunk(0, N, N, x_min, x_max, y_min, y_max, max_iter)
+
+# --- MP2 M2: add below M1 in mandelbrot_parallel.py ---
+def _worker(args):
+    return mandelbrot_chunk(*args)
+
+def mandelbrot_parallel(N, x_min, x_max, y_min, y_max,
+                        max_iter=100, n_workers=2):
+    chunk_size = max(1, N // n_workers)
+    chunks, row = [], 0
+    while row < N:
+        row_end = min(row + chunk_size, N)
+        chunks.append((row, row_end, N, x_min, x_max, y_min, y_max, max_iter))
+        row = row_end
+
+    with Pool(processes=n_workers) as pool:
+        pool.map(_worker, chunks)  # un-timed warm-up: Numba JIT in workers
+        parts = pool.map(_worker, chunks)
+
+    return np.vstack(parts)
+
+
+
     
 def benchmark (func,
                *args, 
@@ -234,20 +256,15 @@ def benchmark (func,
 if __name__ == "__main__":
 
     N = 1024
-    x_min, x_max = -2.0, 1.0
+    x_min, x_max = -2, 1.0
     y_min, y_max = -1.5, 1.5
     max_iter = 100
+    n_workers = 2
 
-    _ = mandelbrot_serial(N, x_min, x_max, y_min, y_max, max_iter) # warmup run
-    t_serial, mb_serial = benchmark(mandelbrot_serial,
-                                    N, x_min, x_max, y_min, y_max, max_iter,
-                                    n_runs=3)
+    mb_par = mandelbrot_parallel(N, x_min, x_max, y_min, y_max, max_iter, n_workers) # warmup run
     
-    print(f"Computation took {t_serial:.3f} seconds")
-
-
     #to crate image of mandelbrot
-    plt.imshow(mb_serial, cmap = "hot")
+    plt.imshow(mb_par, cmap = "hot")
     plt.title("Mandelbrot plot vectorized")
     plt.colorbar()
     plt.show()
