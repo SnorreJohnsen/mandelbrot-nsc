@@ -6,7 +6,7 @@ Course : Numerical Scientific Computing 2026
 import numpy as np
 import time, statistics
 import matplotlib.pyplot as plt
-import line_profiler
+from numba import njit, prange
 
 def row_sums(A: np.ndarray) -> float:
     """ computes row sums of square matrix"""
@@ -22,7 +22,6 @@ def column_sums(A: np.ndarray) -> float:
 
     return s
     
-@line_profiler.profile
 def mandelbrot_point_naive ( c ) :
     """
     computes one mandelbrot point
@@ -48,7 +47,6 @@ def mandelbrot_point_naive ( c ) :
             return n
     return n
 
-@line_profiler.profile
 def compute_mandelbrot_naive (x_min, x_max, y_min, y_max, resx, resy):
     """
     compute mandelbrot set over 2d region naive implementation
@@ -135,7 +133,55 @@ def compute_mandelbrot_vectorized(x_min, x_max, y_min, y_max, resx, resy):
 
     return M
 
+@njit
+def mandelbrot_point_numba(c):
+    z = 0j 
+    max_iter = 100
 
+    for n in range(max_iter):
+        if z.real*z.real + z.imag*z.imag > 4.0:
+            return n
+        z = z**2 + c
+    return n
+
+@njit
+def compute_mandelbrot_numba(x_min, x_max, y_min, y_max, resx, resy):
+    """
+    compute mandelbrot set over 2d region numba implementation
+
+    Parameters
+    ----------
+    x_min : float
+        minimum real value of region
+    x_max : float
+        maximum real value of region 
+    y_min : float
+        minimum imaginary value of region
+    y_max : float
+        maximum imaginary value of region 
+    resx : int
+        number of points in x-axis
+    resy : int
+        number of points in y-axis
+    
+    Returns
+    -------
+    all_n : numpy.ndarray of shape (resx, resy)
+        2d array containing number of iterations before magnitude grows too large for each point in the complex grid
+    """
+
+    #create evenly spaced numbers
+    x = np.linspace(x_min, x_max, resx)
+    y = np.linspace(y_min, y_max, resy)
+
+    #create arrays for iterations
+    all_n = np.zeros((resx, resy), dtype = np.int32)
+
+    for i in range(resx):
+        for j in range(resy):
+            c = x[i] + 1j * y[j]
+            all_n[i, j] = mandelbrot_point_numba(c)
+    return all_n
             
 def benchmark (func,
                *args, 
@@ -161,6 +207,9 @@ if __name__ == "__main__":
     elapsed_time_nai, mandelbrot_nai_out = benchmark(compute_mandelbrot_naive, -2, 1, -1.5, 1.5, 1024, 1024, n_runs=1)
     #print(f"Computation took {elapsed_time_nai:.3f} seconds")
 
+    
+    
+    
     exit()
     res_list = [256, 512, 1024, 2048, 4096]
     time_plot = []
